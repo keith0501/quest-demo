@@ -1,0 +1,218 @@
+
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+    <!--jquery-->
+    <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+
+    <meta charset="UTF-8">
+    <title>New Record</title>
+</head>
+<body>
+
+
+<div class="container">
+    <div class="row main">
+        <div class="main-login main-center">
+            <h5>Please add a new record</h5>
+            <form class="" id="newRecord" th:action="@{/new-record}" th:object="${bean}" method="post">
+
+
+
+                <div class="form-group">
+                    <label for="name" class="cols-sm-2 control-label">Name</label>
+
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user-secret fa" aria-hidden="true"></i></span>
+                            <input type="text" class="form-control" name="name" id="name" th:field="*{name}"  placeholder="Enter Name"/>
+                        </div>
+                    </div>
+                </div>
+
+               <div class="form-group"> <!-- Date input -->
+                    <label for="dob" class="cols-sm-2 control-label">Date Of Birth</label>
+
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-link fa-lg" aria-hidden="true"></i></span>
+                            <input class="form-control" name="dob" id="dob" th:field="*{dob}"  placeholder="MM/DD/YYYY" type="date" />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="PPS" class="cols-sm-2 control-label">PPS Number</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-link fa-lg" aria-hidden="true"></i></span>
+                            <input type="text" class="form-control" name="PPS" id="PPS" th:field="*{pps}"  placeholder="Enter your PPS Number"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone-number" class="cols-sm-2 control-label">Mobile Number</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-link fa-lg" aria-hidden="true"></i></span>
+                            <input type="text" class="form-control" name="phone-number" id="phone-number" th:field="*{phone}"  placeholder="Enter your Mobile Number"/>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="form-group ">
+                    <input type="submit" name="user" value="Save" id="button" class="btn btn-primary btn-lg btn-block login-button" />
+
+                </div>
+
+                <div class="form-group" th:if="${failure}">
+                    <label  class="cols-sm-2 control-label">Oops! That PPS is already on the System</label>
+
+                </div>
+
+
+
+
+            </form>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+
+<!--<script  type="text/javascript" th:src="@{/js/lib.js}"></script>-->
+<script type="application/javascript">
+    $(document).ready(function () {
+
+        // Date Picker UI Settings
+        $(function() {
+            $( "#dob" ).datepicker({
+                changeMonth:true,
+                changeYear: true,
+                selectOtherMonths: true,
+                maxDate: '+0D',
+                dateFormat: "yy-mm-dd",
+
+            });
+        });
+
+
+        //Custom Validation to check the user is over 16
+        jQuery.validator.addMethod("dateGreaterThan" , function (value){
+            console.log("date greater than method called");
+            console.log(value);
+
+
+            if (checkDate(value) < 17){
+                console.log("setting message");
+                $.validator.messages.dateGreaterThan = 'You must be older than 16';
+
+            }else{
+                return true;
+            };
+
+
+
+        });
+
+        //Custom Validation to check the phone number begins with '08'
+        jQuery.validator.addMethod("checkNumberPrefix" , function (value){
+
+            console.log(value);
+
+            if( value != "" && (value.charAt(0) != "0" || value.charAt(1) != "8")){
+                $.validator.messages.checkNumberPrefix = 'Number must begin with 08!';
+            }else{
+
+                return true;
+            };
+
+
+
+        });
+
+
+        // Code to return how old a person is in years
+        function checkDate(dateOfBirth){
+            console.log(dateOfBirth);
+            var dob = new Date(dateOfBirth);
+
+            var diff_ms = Date.now() - dob.getTime();
+            var age_dt = new Date(diff_ms);
+            var age = Math.abs(age_dt.getUTCFullYear() - 1970);
+
+            console.log(age);
+            return age;
+
+        }
+
+
+        // Validation for the fields
+        $('#newRecord').validate({ // initialize the plugin
+
+
+
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 25
+
+                },
+                pps: {
+                    required: true
+
+                },
+                phone: {
+                    required: false,
+                    checkNumberPrefix: true,
+
+                },
+                dob: {
+                    required: true,
+                    dateGreaterThan: true
+                },
+
+
+            },
+            submitHandler: function (form) { // for demo
+               // alert('valid form submitted'); // for demo
+                return true; // for demo
+            }
+        });
+
+    });
+
+</script>
+</body>
+</html>
